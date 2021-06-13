@@ -99,28 +99,37 @@ main {
     transition: 0.8s;
 }
 
-.avatar_list {
+.avatar_list {  
     display: flex;
     height: 4rem;
+    width: 100vw;
     align-items: center;
     border-bottom: 0.2rem solid #ccc;
+    overflow: hidden;
+    overflow-x: auto;
 }
 
 .avatar_list_item {
-    margin: 0 2.5rem;
+    margin: 0 0.2rem;
     cursor: pointer;
 }
 
 .avatar_list_item img {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
+}
+
+.chat_list{
+    height: 80vh;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .chat_list_item {
     display: flex;
     align-items: center;
-    margin: 2rem 0;
+    margin: 0.5rem 0;
 }
 
 .chat_list_self {
@@ -129,40 +138,46 @@ main {
 }
 
 .chat_list_self .avatar_info {
-    margin: 0 0 0 2rem;
+    margin: 0 0 0 0.3rem;
 }
 
 .chat_list_self .message {
-    border-radius: 2rem 1rem 1rem 1rem;
+    border-radius: 0.6rem 0rem 0.6rem 0.6rem;
+}
+.chat_list_self .create_time {
+   text-align: right;
 }
 
 .avatar_info {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 1rem;
-    margin-right: 2rem;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 0.3rem;
 }
 
 .avatar_info img {
     width: 100%;
+    height: 100%;
+    border-radius: 0.4rem;
 }
 
 .message {
-    background-color: #e4e4e4;
+    text-align: center;
+    background-color: pink;
     /* text-align: center; */
-    padding: 2rem;
-    border-radius: 4rem 8rem 4rem 1rem;
+    padding: 0.3rem;
+    border-radius:  0rem 0.6rem 0.6rem 0.6rem;
 }
 
 .create_time {
-    font-size: 14rem;
-    color: #d4d4d4;
+    font-size: 1rem;
+   color: #ccc;
+    text-align: left;
 }
 .chat_window{
     display: flex;
      position:absolute;
      width: 90%;
-     bottom: 1.5rem; 
+     bottom: 1rem; 
      left: 5%;
 
 }

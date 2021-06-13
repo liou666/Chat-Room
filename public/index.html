@@ -3,7 +3,7 @@
  * @Autor: Liou
  * @Date: 2021-06-13 20:48:22
  * @LastEditors: Liou
- * @LastEditTime: 2021-06-14 01:27:57
+ * @LastEditTime: 2021-06-14 03:21:05
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -41,11 +41,11 @@
 
                 </div>
 
-                <div class="chat_list" style="height: 500px;">
+                <div class="chat_list">
                 </div>
                 <!-- 输入框 -->
                 <div class="chat_window">
-                    <input id="sendMessageInput" class="form-control" type="text">
+                    <input style="height:2.7rem" id="sendMessageInput" class="form-control" type="text">
                     <div class="btn-primary sendBtn">submit</div>
                 </div>
             </section>
@@ -67,19 +67,27 @@
             }
             r.readAsDataURL(file)
         })
-        let users = [];
+
         let user = null
-        let socket = null
+        let socket = null;
+
         //进入聊天室
         document.querySelector(".enter").addEventListener("click", () => {
             if (img.getAttribute("is-null") === "true" || !nickName.value.trim()) return alert("avater or nickName is null!");
             document.querySelector(".panel").classList.add("enter_chat");
-            socket = io("http://localhost:3000");
 
+            socket = io();
             socket.emit("login", { avatar: img.src, nickName: nickName.value });
+
+
+            socket.on("notify", data => {
+                console.log(data);
+            })
+
+            socket.on("saveUser", data => user = data)
+
             //渲染头像
-            socket.on("getInfo", async data => {
-                if (!user) user = data[data.length - 1]
+            socket.on("renderAvater", async data => {
                 await init(data);
                 document.querySelectorAll(".avatar_list_item img").forEach(u => {
                     u.onclick = () => {
@@ -100,13 +108,13 @@
             $(".sendBtn").addEventListener("click", () => {
                 const { value } = $("#sendMessageInput");
                 if (!value.trim()) return;
-                socket.emit("broadMessage", { user, message: value })
+                socket.emit("broadMessage", { user, message: value });
+                $("#sendMessageInput").value = ''
             })
             //监听群发消息
             socket.on("broadMessage", data => {
                 const { message } = data;
                 const { avatar, id, nickName } = data.user
-
                 if (id !== user.id) {
                     const html = `<div class="chat_list_item">
                         <div class="avatar_info">
@@ -114,10 +122,11 @@
                                 alt="">
                         </div>
                         <div class="chat_info">
+                            <div class="create_time">${nickName}</div>
                             <div class="message">
                                 ${message}
                             </div>
-                            <div class="create_time">12:00</div>
+                           
                         </div>
                     </div>`
                     $(".chat_list").insertAdjacentHTML("beforeend", html)
@@ -128,10 +137,11 @@
                                 alt="">
                         </div>
                         <div class="chat_info">
+                            <div class="create_time">${nickName}</div>
                             <div class="message">
                                 ${message}
                             </div>
-                            <div class="create_time">12:00</div>
+                           
                         </div>
                     </div>`
                     $(".chat_list").insertAdjacentHTML("beforeend", html)
@@ -143,25 +153,19 @@
 
 
 
-        //初始化
+        //初始化头像列表
         async function init(data) {
-            users = data;
             let html = ''
-            users.forEach(u => {
+            data.forEach(u => {
                 const { id, nickName, avatar } = u;
-                html += `<div class="avatar_list_item">
+                html +=
+                    `<div class="avatar_list_item">
                     <img src=${avatar}>
-</div>`
+                  </div>`
             })
             document.querySelector(".avatar_list").innerHTML = html
         }
-        //渲染头像
-        function renderAvatar(user) {
-            const { id, nickName, avatar } = user
-            const img = document.createElement("img");
-            img.src = avatar;
-            document.querySelector(".avatar_list_item").innerHTML = img
-        }
+
 
         function reanderChat() {
 
