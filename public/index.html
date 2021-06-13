@@ -1,0 +1,61 @@
+<!--
+ * @Description: 
+ * @Autor: Liou
+ * @Date: 2021-06-13 20:48:22
+ * @LastEditors: Liou
+ * @LastEditTime: 2021-06-13 22:15:47
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Chat Room</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <main>
+        <section class="panel">
+            <!-- 登录界面 -->
+            <section class="login  ">
+                <div style="color: #f39c12; font-size: 18px;font-weight: 600;" class="title mb-5
+              mt-1">Welcome To ChatRoom</div>
+                <div class="avater "><img is-null="true" id="img"
+                        src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1892982544,3738995014&fm=26&gp=0.jpg"
+                        alt="">
+                    <input type="file" id="file" name="flie">
+                </div>
+                <input placeholder="enter your nickname" id="nickName"
+                    class="enter_name form-control mb-5 mt-4 w-75 h-2" type="text">
+                <div class="enter">Go</div>
+            </section>
+            <!-- 聊天室 -->
+            <section style="position:relative;" class="board_chat">
+                <div class="avatar_list">
+
+                </div>
+
+                <div class="chat_list" style="height: 500px;">
+                </div>
+                <!-- 输入框 -->
+                <div style="position:absolute; width: 80%;bottom: 2px; left: 5%;">
+                    <input id="sendMessageInput" class="form-control" type="text">
+                    <button class="sendBtn">submit</button>
+                </div>
+            </section>
+        </section>
+    </main>
+    <script>
+
+
+    </script>
+
+</body>
+
+</html>
