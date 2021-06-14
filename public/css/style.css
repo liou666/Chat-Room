@@ -112,8 +112,20 @@ main {
 .avatar_list_item {
     margin: 0 0.2rem;
     cursor: pointer;
+    position: relative;
 }
-
+.chat_badge{
+    position: absolute;
+    background-color: brown;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    top: 0px;
+    right: 0px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.2rem;
+}
 .avatar_list_item img {
     width: 3rem;
     height: 3rem;
@@ -143,6 +155,7 @@ main {
 
 .chat_list_self .message {
     border-radius: 0.6rem 0rem 0.6rem 0.6rem;
+     background-color: pink;
 }
 .chat_list_self .create_time {
    text-align: right;
@@ -162,9 +175,10 @@ main {
 
 .message {
     text-align: center;
-    background-color: pink;
+    background-color: #e4e4e4;
     /* text-align: center; */
-    padding: 0.3rem;
+    padding: 0.3rem 0.5rem;
+    letter-spacing: 1px;
     border-radius:  0rem 0.6rem 0.6rem 0.6rem;
 }
 
@@ -179,11 +193,54 @@ main {
      width: 90%;
      bottom: 1rem; 
      left: 5%;
-
+z-index: 9999;
 }
 .sendBtn{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 6.5rem;
+}
+
+
+/* 私聊 */
+.chat_private{
+    position: absolute;
+    height: 80vh;
+    top: 100%;
+    width: 100vw;
+    right: 0;
+    z-index: 100;
+    background: #ccc;
+    transition: 0.5s;
+}
+.chat_private .chat_list{
+    height: calc(80vh - 3rem);
+}
+.chat_private.active{
+    top:4rem
+}
+
+.chat_private_title{
+    position: relative;
+    height: 3rem;
+    background-color: aqua;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat_close{
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.4rem;
+    line-height: 2rem;
+    text-align: center;
+    background-color: blueviolet;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    color: #fff;
+    opacity: 0.5;
 }

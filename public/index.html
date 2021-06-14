@@ -3,7 +3,7 @@
  * @Autor: Liou
  * @Date: 2021-06-13 20:48:22
  * @LastEditors: Liou
- * @LastEditTime: 2021-06-14 03:21:05
+ * @LastEditTime: 2021-06-14 18:58:26
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -41,12 +41,22 @@
 
                 </div>
 
-                <div class="chat_list">
+                <div class="chat_more">
+                    <div class="chat_list">
+                    </div>
                 </div>
+
                 <!-- 输入框 -->
                 <div class="chat_window">
                     <input style="height:2.7rem" id="sendMessageInput" class="form-control" type="text">
                     <div class="btn-primary sendBtn">submit</div>
+                </div>
+                <div class="chat_private">
+                    <div class="chat_private_title">
+
+                    </div>
+                    <div class="chat_list">
+                    </div>
                 </div>
             </section>
         </section>
@@ -70,7 +80,8 @@
 
         let user = null
         let socket = null;
-
+        let isPrivateChat = false;
+        let targetId = ''
         //进入聊天室
         document.querySelector(".enter").addEventListener("click", () => {
             if (img.getAttribute("is-null") === "true" || !nickName.value.trim()) return alert("avater or nickName is null!");
@@ -84,19 +95,41 @@
                 console.log(data);
             })
 
-            socket.on("saveUser", data => user = data)
+            socket.on("saveUser", data => {
+                user = data;
+
+            })
 
             //渲染头像
             socket.on("renderAvater", async data => {
                 await init(data);
-                document.querySelectorAll(".avatar_list_item img").forEach(u => {
-                    u.onclick = () => {
-                        if (u.src !== user.avatar) {
-                            let targetUser = users[users.findIndex(x => x.avatar === u.src)];
-                            console.log(`与${targetUser.nickName}私聊`);
-                            const { value } = $("#sendMessageInput");
-                            if (!value.trim()) return;
-                            socket.emit("privateChat", { user: targetUser, message: value })
+                document.querySelectorAll(".avatar_list_item img").forEach(img => {
+                    img.onclick = () => {
+                        //私聊
+                        if (img.dataset.id !== user.id) {
+                            //取消小红点
+                            const span = img.nextElementSibling;
+                            span.className = "";
+                            span.innerHTML = ''
+
+                            isPrivateChat = true;
+                            const { id, nickname } = img.dataset;
+                            targetId = id
+                            $(".chat_private").classList.add("active");
+                            $('.chat_private_title').innerHTML =
+                                ` <span class="chat_title">与${nickname}私聊</span>
+                              <span class="chat_close">x</span>`
+
+                            //监听关闭私聊
+                            $(".chat_close").onclick = () => {
+                                isPrivateChat = false
+                                $(".chat_private").classList.remove("active");
+                            };
+
+                            //取消之前的监听
+                            $(".sendBtn").removeEventListener("click", sendMessage);
+                            $(".sendBtn").addEventListener("click", sendMessage)
+
 
                         }
                     }
@@ -105,18 +138,19 @@
                 })
             })
 
-            $(".sendBtn").addEventListener("click", () => {
-                const { value } = $("#sendMessageInput");
-                if (!value.trim()) return;
-                socket.emit("broadMessage", { user, message: value });
-                $("#sendMessageInput").value = ''
-            })
+            $(".sendBtn").addEventListener("click", sendMessage)
             //监听群发消息
             socket.on("broadMessage", data => {
-                const { message } = data;
-                const { avatar, id, nickName } = data.user
-                if (id !== user.id) {
-                    const html = `<div class="chat_list_item">
+                console.log(user);
+                reanderChat(data.message, data.user)
+            })
+
+
+            //监听私聊
+            socket.on("privateChat", data => {
+                const { actionUser, message } = data;
+                const { avatar, nickName, id } = actionUser;
+                const html = `<div class="chat_list_item">
                         <div class="avatar_info">
                             <img src=${avatar}
                                 alt="">
@@ -129,23 +163,16 @@
                            
                         </div>
                     </div>`
-                    $(".chat_list").insertAdjacentHTML("beforeend", html)
-                } else {
-                    const html = `<div class="chat_list_item chat_list_self">
-                        <div class="avatar_info">
-                            <img src=${avatar}
-                                alt="">
-                        </div>
-                        <div class="chat_info">
-                            <div class="create_time">${nickName}</div>
-                            <div class="message">
-                                ${message}
-                            </div>
-                           
-                        </div>
-                    </div>`
-                    $(".chat_list").insertAdjacentHTML("beforeend", html)
-                }
+                $(".chat_private .chat_list").insertAdjacentHTML("beforeend", html);
+
+                document.querySelectorAll(".avatar_list_item img").forEach(img => {
+                    if (img.dataset.id === id) {
+                        const span = img.nextElementSibling;
+                        span.className = "chat_badge";
+                        let num = +(span.innerHTML);
+                        span.innerHTML = ++num
+                    }
+                })
             })
 
 
@@ -155,22 +182,87 @@
 
         //初始化头像列表
         async function init(data) {
+
             let html = ''
             data.forEach(u => {
+
                 const { id, nickName, avatar } = u;
                 html +=
-                    `<div class="avatar_list_item">
-                    <img src=${avatar}>
-                  </div>`
+                    `<div class="avatar_list_item ">
+                    <img data-id=${id} data-nickName=${nickName} src=${avatar}>
+                <span ></span>
+                    </div>`
             })
+
             document.querySelector(".avatar_list").innerHTML = html
         }
 
+        //渲染内容
+        function reanderChat(message, targetUser) {
 
-        function reanderChat() {
+            const { avatar, id, nickName } = targetUser
 
+            if (id !== user.id) {
+                const html = `<div class="chat_list_item">
+                        <div class="avatar_info">
+                            <img src=${avatar}
+                                alt="">
+                        </div>
+                        <div class="chat_info">
+                            <div class="create_time">${nickName}</div>
+                            <div class="message">
+                                ${message}
+                            </div>
+                           
+                        </div>
+                    </div>`
+                $(".chat_more .chat_list").insertAdjacentHTML("beforeend", html)
+            } else {
+                const html = `<div class="chat_list_item chat_list_self">
+                        <div class="avatar_info">
+                            <img src=${avatar}
+                                alt="">
+                        </div>
+                        <div class="chat_info">
+                            <div class="create_time">${nickName}</div>
+                            <div class="message">
+                                ${message}
+                            </div>
+                           
+                        </div>
+                    </div>`
+                $(".chat_more .chat_list").insertAdjacentHTML("beforeend", html)
+            }
         }
 
+
+
+        function sendMessage() {
+            const { value } = $("#sendMessageInput");
+            if (!value.trim()) return;
+            if (isPrivateChat) {
+                const { avatar, nickName } = user;
+                const html = `<div class="chat_list_item chat_list_self">
+                        <div class="avatar_info">
+                            <img src=${avatar}
+                                alt="">
+                        </div>
+                        <div class="chat_info">
+                            <div class="create_time">${nickName}</div>
+                            <div class="message">
+                                ${value}
+                            </div>
+                           
+                        </div>
+                    </div>`
+                $(".chat_private .chat_list").insertAdjacentHTML("beforeend", html)
+                socket.emit("privateChat", { targetUserId: targetId, message: value })
+
+            } else {
+                socket.emit("broadMessage", { user, message: value });
+            }
+            $("#sendMessageInput").value = ''
+        }
     </script>
 
 </body>

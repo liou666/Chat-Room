@@ -3,7 +3,7 @@
  * @Autor: Liou
  * @Date: 2021-06-13 20:49:20
  * @LastEditors: Liou
- * @LastEditTime: 2021-06-14 02:34:04
+ * @LastEditTime: 2021-06-14 17:53:20
  */
 const express = require("express");
 const app = express();
@@ -36,6 +36,14 @@ io.on('connection', socket => {
 
     socket.on('broadMessage', data => {
         io.emit("broadMessage", data)
+    })
+
+    socket.on("privateChat", (data) => {
+        const { targetUserId, message } = data;
+        const actionUser = users.find(user => user.id === socket.id)
+        const targetSocket = io.sockets.sockets.get(targetUserId)
+
+        targetSocket.emit("privateChat", { actionUser, message })
     })
 
     function notify(msg) {
