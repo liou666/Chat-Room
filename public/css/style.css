@@ -136,7 +136,11 @@ main {
     height: 80vh;
     overflow: hidden;
     overflow-y: auto;
+    background: url("../images/bg.jpg")  no-repeat -22rem -40rem;
 }
+
+
+
 
 .chat_list_item {
     display: flex;
@@ -211,8 +215,11 @@ z-index: 9999;
     width: 100vw;
     right: 0;
     z-index: 100;
-    background: #ccc;
+
     transition: 0.5s;
+}
+.chat_private .chat_list{
+    background: url("../images/bg.jpg")  no-repeat -68rem -22rem; ;
 }
 .chat_private .chat_list{
     height: calc(80vh - 3rem);
@@ -224,7 +231,7 @@ z-index: 9999;
 .chat_private_title{
     position: relative;
     height: 3rem;
-    background-color: aqua;
+    background-color: var(--bs-info);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -243,4 +250,9 @@ z-index: 9999;
     transform: translateY(-50%);
     color: #fff;
     opacity: 0.5;
+}
+
+.target_name{
+    font-size: 1.1rem;
+    font-weight: 600;
 }

@@ -3,7 +3,7 @@
  * @Autor: Liou
  * @Date: 2021-06-13 20:49:20
  * @LastEditors: Liou
- * @LastEditTime: 2021-06-14 17:53:20
+ * @LastEditTime: 2021-06-14 20:39:26
  */
 const express = require("express");
 const app = express();
@@ -11,10 +11,11 @@ const server = require("http").createServer(app);
 const io = require('socket.io')(server);
 
 const PORT = 3000;
+const users = [];
 
 app.use(express.static(__dirname + '/public'))
 
-const users = [];
+
 
 
 io.on('connection', socket => {
