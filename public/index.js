@@ -3,7 +3,7 @@
  * @Autor: Liou
  * @Date: 2021-06-14 19:36:50
  * @LastEditors: Liou
- * @LastEditTime: 2021-06-14 20:37:59
+ * @LastEditTime: 2021-06-16 20:40:58
  */
 
 let user = null,//当前用户
@@ -30,12 +30,12 @@ $("#file").addEventListener("change", () => {
 
 //进入聊天室
 $(".enter").addEventListener("click", () => {
-    if (img.getAttribute("is-null") === "true" || !nickName.value.trim()) return alert("头像和昵称不能为空!");
+    if (img.getAttribute("is-null") === "true" || !$("#nickName").value.trim()) return alert("头像和昵称不能为空!");
     $(".panel").classList.add("enter_chat");
 
     socket = io();
     //登录
-    socket.emit("login", { avatar: img.src, nickName: nickName.value });
+    socket.emit("login", { avatar: img.src, nickName: $("#nickName").value });
 
     //服务器端广播的内容
     socket.on("notify", data => console.log(data))
@@ -134,7 +134,7 @@ async function init(data) {
              </div>`
     })
 
-    document.querySelector(".avatar_list").innerHTML = html
+    $(".avatar_list").innerHTML = html
 }
 
 //渲染内容
